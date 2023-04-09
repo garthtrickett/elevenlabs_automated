@@ -13,22 +13,91 @@ async function thief() {
   var elevenlabs_account_created = false;
 
   while (elevenlabs_account_created == false) {
-    let result = await get_temp_email_and_try_login_create_elevenlabs_account();
-    let temp_mail_window_handle = result[1];
-    let elevenlabs_window_handle = result[2];
-    let email = result[3];
-    let driver = result[4]
+    var result = await get_temp_email_and_try_login_create_elevenlabs_account();
+    var temp_mail_window_handle = result[1];
+    var elevenlabs_window_handle = result[2];
+    var email = result[3];
+    var driver = result[4]
     elevenlabs_account_created = result[0];
 
     console.log(elevenlabs_account_created);
   }
 
+  await delay(2000);
 
-  // await driver.switchTo().window(temp_mail_window_handle);
+  await driver.switchTo().window(temp_mail_window_handle);
+  await driver.close();
+  await driver.switchTo().window(elevenlabs_window_handle);
+  var temp_email_url = "https://emailnator.com/inbox/#"
+  temp_email_url = temp_email_url.concat(email);
+  await driver.switchTo().newWindow('tab');
+  await driver.get(temp_email_url);
 
-  // const messages = await driver.findElement(By.className('message_container'));
+
+  var emails_xpath = "/html/body/div/div/section/div/div/div[3]/div/div[2]/div[2]/div/table/tbody";
+  var emails_loaded = false;
+  while (emails_loaded == false) {
+    var card_body_element_inner_text = await driver.wait(until.elementLocated(By.xpath(emails_xpath))).getAttribute("innerText");
+    var card_body_element = await driver.wait(until.elementLocated(By.xpath(emails_xpath)));
+    if (card_body_element_inner_text.includes("ElevenLabs") == true) {
+      emails_loaded = true;
+
+
+    }
+    else {
+      await delay(3000);
+      var card_body_element = await driver.wait(until.elementLocated(By.className("card-body"))).getAttribute("innerText");
+    }
+
+  }
+
+
+  let elements = await card_body_element.findElements(By.css("tr"));
+  var email_clicked = false;
+  for (let e of elements) {
+    if (email_clicked == false) {
+      var email_text = await e.getText();
+
+      if (email_text.includes("ElevenLabs") == true) {
+        console.log(email_text);
+        await e.findElement(By.css("a")).click();
+        email_clicked = true;
+      }
+    }
+  }
+
+
+  var email_link_xpath = "/html/body/div/div/section/div/div/div[3]/div/div/div[2]/div/div/p[3]/a";
+  await driver.wait(until.elementLocated(By.xpath(email_link_xpath))).click();
+
+
+  var sign_in_xpath = "/html/body/div[5]/div/div/div/div[2]/div/div/div[1]/div[2]/div/div/div[2]/span/span";
+  await driver.wait(until.elementLocated(By.xpath(sign_in_xpath))).click();
+
+
+  var sign_in_email_xpath = "/html/body/div[5]/div/div/div/div[2]/div/div/div[2]/div/form/div[2]/input";
+  var sign_in_password_xpath = "/html/body/div[5]/div/div/div/div[2]/div/div/div[2]/div/form/div[3]/input";
+  var sign_in_submit_xpath = "/html/body/div[5]/div/div/div/div[2]/div/div/div[2]/div/form/div[4]/button";
+
+
+  await driver.wait(until.elementLocated(By.xpath(sign_in_email_xpath))).sendKeys(email, Key.RETURN);
+  await driver.findElement(By.xpath(sign_in_password_xpath)).sendKeys("Bisonoh.123568", Key.RETURN, Key.RETURN);
+
+  // await driver.findElement(By.xpath(sign_in_submit_xpath)).click();
+
+
 
 }
+
+
+
+
+
+
+
+
+
+
 
 async function get_temp_email_and_try_login_create_elevenlabs_account() {
   let driver = await new Builder().forBrowser("chrome").build();
