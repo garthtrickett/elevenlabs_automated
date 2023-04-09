@@ -1,6 +1,19 @@
 const { Builder, By, Key, until } = require("selenium-webdriver");
+const axios = require('axios');
+var fs = require('fs');
+
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
+
+
+try {
+  var data = fs.readFileSync('ethnic_phenomenon.txt', 'utf8');
+  var text = data.slice(0, 2400);
+  // text = "hello world more";
+} catch (e) {
+  console.log('Error:', e.stack);
+}
+
 
 // refresh the email either with the provided button or the page based on if elevenlabs innertext is present
 // click on the link that activates the elevenlabs account
@@ -20,7 +33,6 @@ async function thief() {
     var driver = result[4]
     elevenlabs_account_created = result[0];
 
-    console.log(elevenlabs_account_created);
   }
 
   await delay(2000);
@@ -59,7 +71,6 @@ async function thief() {
       var email_text = await e.getText();
 
       if (email_text.includes("ElevenLabs") == true) {
-        console.log(email_text);
         await e.findElement(By.css("a")).click();
         email_clicked = true;
       }
@@ -83,26 +94,60 @@ async function thief() {
   await driver.wait(until.elementLocated(By.xpath(sign_in_email_xpath))).sendKeys(email, Key.RETURN);
   await driver.findElement(By.xpath(sign_in_password_xpath)).sendKeys("Bisonoh.123568", Key.RETURN, Key.RETURN);
 
-  var profile_button_xpath = "/html/body/div[3]/div[1]/div/div/div[2]/div[3]/div/button";
+  var voice_button_select_xpath = "/html/body/div[3]/div[2]/div/div/div/form/div/div[1]/div[1]/div/button";
+  await driver.wait(until.elementLocated(By.xpath(voice_button_select_xpath))).sendKeys(Key.RETURN);
 
-  await driver.wait(until.elementLocated(By.xpath(profile_button_xpath))).click();
-
-  var profile_link_xpath = "/html/body/div[3]/div[1]/div/div/div[2]/div[3]/div[2]/div[2]/a[1]";
-
-  await driver.wait(until.elementLocated(By.xpath(profile_link_xpath))).click();
-
-  var uncover_api_key_button_xpath = "/html/body/div[4]/div/div/div/div[2]/div/div/div/div[2]/div/div[2]/div/button[1]";
-
-  await driver.wait(until.elementLocated(By.xpath(uncover_api_key_button_xpath))).click();
+  var voice_button_josh_xpath = "/html/body/div[3]/div[2]/div/div/div/form/div/div[1]/div[1]/div/ul/li[7]";
+  await driver.wait(until.elementLocated(By.xpath(voice_button_josh_xpath))).sendKeys(Key.RETURN);
 
 
-  var api_key_text_field_element_xpath = "/html/body/div[4]/div/div/div/div[2]/div/div/div/div[2]/div/div[2]/div/div/input";
+  var text_input_area_xpath = "/html/body/div[3]/div[2]/div/div/div/form/div/div[4]/div[1]/textarea";
+  await driver.wait(until.elementLocated(By.xpath(text_input_area_xpath))).sendKeys(text, Key.RETURN);
+
+  var submit_generate_text_xpath = "/html/body/div[3]/div[2]/div/div/div/form/div/div[4]/div[1]/button";
+  await driver.wait(until.elementLocated(By.xpath(submit_generate_text_xpath))).sendKeys(Key.RETURN);
+
+  // var profile_button_xpath = "/html/body/div[3]/div[1]/div/div/div[2]/div[3]/div/button";
+
+  // await driver.wait(until.elementLocated(By.xpath(profile_button_xpath))).click();
+
+  // var profile_link_xpath = "/html/body/div[3]/div[1]/div/div/div[2]/div[3]/div[2]/div[2]/a[1]";
+
+  // await driver.wait(until.elementLocated(By.xpath(profile_link_xpath))).click();
+
+  // var uncover_api_key_button_xpath = "/html/body/div[4]/div/div/div/div[2]/div/div/div/div[2]/div/div[2]/div/button[1]";
+
+  // await driver.wait(until.elementLocated(By.xpath(uncover_api_key_button_xpath))).click();
 
 
-  var x_api_key = await driver.wait(until.elementLocated(By.xpath(api_key_text_field_element_xpath))).getAttribute("value");
+  // var api_key_text_field_element_xpath = "/html/body/div[4]/div/div/div/div[2]/div/div/div/div[2]/div/div[2]/div/div/input";
 
-  driver.quit();
-  console.log(x_api_key);
+  // var xi_api_key = await driver.wait(until.elementLocated(By.xpath(api_key_text_field_element_xpath))).getAttribute("value");
+
+  // driver.quit();
+  // var voice_id = "TxGEqnHWrfWFTfGW9XjX";
+  // var file_name = "audio.mp3";
+
+  // try {
+  //   var voice = "https://api.elevenlabs.io/v1/text-to-speech/" + voice_id + "/stream";
+  //   const response = await axios({
+  //     method: 'post',
+  //     url: voice,
+  //     data: { text },
+  //     headers: {
+  //       'Accept': 'audio/mpeg',
+  //       'xi-api-key': xi_api_key,
+  //       'Content-Type': 'application/json',
+  //     },
+  //     responseType: 'stream'
+  //   });
+  //   response.data.pipe(fs.createWriteStream(file_name));
+  // } catch (error) {
+  //   console.error(error);
+  // }
+
+
+
 
 }
 

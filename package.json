@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cloudscraper": "^4.6.0",
+    "elevenlabs-api": "^1.0.6",
     "request": "^2.88.2",
     "selenium-webdriver": "^4.8.2"
   }
