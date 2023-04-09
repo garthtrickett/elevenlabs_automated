@@ -83,9 +83,26 @@ async function thief() {
   await driver.wait(until.elementLocated(By.xpath(sign_in_email_xpath))).sendKeys(email, Key.RETURN);
   await driver.findElement(By.xpath(sign_in_password_xpath)).sendKeys("Bisonoh.123568", Key.RETURN, Key.RETURN);
 
-  // await driver.findElement(By.xpath(sign_in_submit_xpath)).click();
+  var profile_button_xpath = "/html/body/div[3]/div[1]/div/div/div[2]/div[3]/div/button";
+
+  await driver.wait(until.elementLocated(By.xpath(profile_button_xpath))).click();
+
+  var profile_link_xpath = "/html/body/div[3]/div[1]/div/div/div[2]/div[3]/div[2]/div[2]/a[1]";
+
+  await driver.wait(until.elementLocated(By.xpath(profile_link_xpath))).click();
+
+  var uncover_api_key_button_xpath = "/html/body/div[4]/div/div/div/div[2]/div/div/div/div[2]/div/div[2]/div/button[1]";
+
+  await driver.wait(until.elementLocated(By.xpath(uncover_api_key_button_xpath))).click();
 
 
+  var api_key_text_field_element_xpath = "/html/body/div[4]/div/div/div/div[2]/div/div/div/div[2]/div/div[2]/div/div/input";
+
+
+  var x_api_key = await driver.wait(until.elementLocated(By.xpath(api_key_text_field_element_xpath))).getAttribute("value");
+
+  driver.quit();
+  console.log(x_api_key);
 
 }
 
