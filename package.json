@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-lightsail": "^3.309.0",
     "elevenlabs-api": "^1.0.6",
     "request": "^2.88.2",
     "selenium-webdriver": "^4.8.2"
