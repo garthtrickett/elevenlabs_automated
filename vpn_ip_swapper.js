@@ -2,14 +2,18 @@ const { AttachStaticIpCommand, GetStaticIpCommand, LightsailClient, AllocateStat
 
 const execSync = require('child_process').execSync;
 
-// secret access key ->  tjr8hGkkHBgTlipzmDIupF2XD6tUx+3jNvBHLMBI
-// access key -> AKIA2MEBFDMEF2QBF5EG
+const fs = require('fs');
+
+let rawdata = fs.readFileSync('apikey.json');
+let apikey = JSON.parse(rawdata);
+
+
 
 
 async function get_static_ip() {
   execSync('nmcli --show-secrets --ask connection down wg0', { encoding: 'utf-8' });  // the default is 'buffer'
   execSync('nmcli connection delete wg0', { encoding: 'utf-8' });  // the default is 'buffer'
-  var client = new LightsailClient({ region: "ap-southeast-2", credentials: { accessKeyId: "AKIA2MEBFDMEF2QBF5EG", secretAccessKey: "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" } });
+  var client = new LightsailClient({ region: "ap-southeast-2", credentials: { accessKeyId: apikey.accessKeyId, secretAccessKey: apikey.secretAccessKey } });
   var input = { // GetStaticIpRequest
     staticIpName: "StaticIp-1", // required
   };
