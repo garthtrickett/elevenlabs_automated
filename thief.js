@@ -1,9 +1,10 @@
 const { Builder, By, Key, until } = require("selenium-webdriver");
 const axios = require('axios');
 var fs = require('fs');
-
-
+const lib = require("./vpn_ip_swapper.js");
+const execSync = require('child_process').execSync;
 const delay = ms => new Promise(res => setTimeout(res, ms));
+const promisify = require('util').promisify;
 
 
 try {
@@ -14,15 +15,20 @@ try {
   console.log('Error:', e.stack);
 }
 
-
-// refresh the email either with the provided button or the page based on if elevenlabs innertext is present
-// click on the link that activates the elevenlabs account
-// get the x-api-key from elevenlabs profile tab
-// then use the api https://api.elevenlabs.io/docs
+// TODO
+// Figure out how to find the end of a sentence on the text
+// repeat the max 2400 slice 4 times then run thief again
 
 
-async function thief() {
 
+
+
+
+
+
+
+
+const thief = async () => {
   var elevenlabs_account_created = false;
 
   while (elevenlabs_account_created == false) {
@@ -147,7 +153,7 @@ async function thief() {
     console.error(error);
   }
 
-
+  return true;
 
 
 }
@@ -155,14 +161,7 @@ async function thief() {
 
 
 
-
-
-
-
-
-
-
-async function get_temp_email_and_try_login_create_elevenlabs_account() {
+const get_temp_email_and_try_login_create_elevenlabs_account = async () => {
   let driver = await new Builder().forBrowser("chrome").build();
   await driver.get("https://www.emailnator.com");
   email_path = "/html/body/div/div/main/div[1]/div/div/div/div[2]/div/div[1]/input";
@@ -213,16 +212,15 @@ async function get_temp_email_and_try_login_create_elevenlabs_account() {
 }
 
 
-thief();
 
+const main = async () => {
+  const get_static_ip_result = await lib.get_static_ip()
 
+  const thief_result = await thief()
 
+}
 
-
-
-
-
-
+main()
 
 
 

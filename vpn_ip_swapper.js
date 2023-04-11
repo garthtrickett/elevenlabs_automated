@@ -47,12 +47,15 @@ async function get_static_ip() {
   execSync(joined_command_string, { encoding: 'utf-8' });  // the default is 'buffer'
   execSync('sudo nmcli connection import type wireguard file "/etc/wireguard/wg0.conf"', { encoding: 'utf-8' });  // the default is 'buffer'
 
-
-
+  return "finished";
 }
 
 
 
 
-get_static_ip();
+
+module.exports = { get_static_ip };
+
+
+
 
