@@ -19,10 +19,10 @@ try {
   console.log('Error:', e.stack);
 }
 
-// TODO
-// Figure out how to find the end of a sentence on the text
-// repeat the max 2400 slice 4 times then run thief again
 // mp3wrap combined.mp3 *.mp3
+
+
+
 const main = async () => {
   var book_character_length = data.length;
   var section_length = 2500;
@@ -33,7 +33,7 @@ const main = async () => {
   console.log("Book Character Length: " + book_character_length);
 
   while (end_section_character < book_character_length) {
-    if (section > 1) {
+    if (section > 13) {
       break
     }
 
@@ -46,19 +46,23 @@ const main = async () => {
     }
 
     console.log("Section " + section);
-    // console.log(start_section_character);
-    // console.log(end_section_character);
+    console.log(start_section_character);
 
 
 
     var last_character = data.slice(start_section_character, end_section_character).lastIndexOf(".");
     last_character = start_section_character + last_character;
 
-    // console.log(data.slice(start_section_character + 2, last_character));
-    text = data.slice(start_section_character + 2, last_character);
+    text = data.slice(start_section_character + 2, last_character + 1);
+    console.log(last_character);
 
 
-    const get_static_ip_result = await lib.get_static_ip()
+    if (((section - 1) % 4 === 0) || (section == 1)) {
+      const get_static_ip_result = await lib.get_static_ip()
+    }
+
+
+
 
     const thief_result = await thief(text, section)
 
