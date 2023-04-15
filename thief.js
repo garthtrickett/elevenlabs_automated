@@ -2,6 +2,7 @@ const { Builder, By, Key, until, options } = require("selenium-webdriver");
 const chromeDriver = require('selenium-webdriver/chrome');
 const axios = require('axios');
 var fs = require('fs');
+const path = require('path');
 const lib = require("./vpn_ip_swapper.js");
 const execSync = require('child_process').execSync;
 const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -9,12 +10,55 @@ const promisify = require('util').promisify;
 
 
 
+// Function to check if a file with a specific extension exists in a directory
+function checkFileWithExtension(dir, extension) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(dir, (err, files) => {
+      if (err) {
+        reject(err);
+      } else {
+        const fileFound = files.find((file) => path.extname(file) === extension);
+        resolve(fileFound !== undefined);
+      }
+    });
+  });
+}
 
+
+// Function to rename the first file with a specific extension in a directory
+function renameFileWithExtension(dir, extension, newName) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(dir, (err, files) => {
+      if (err) {
+        reject(err);
+      } else {
+        const fileToRename = files.find((file) => path.extname(file) === extension);
+        if (fileToRename) {
+          const oldPath = path.join(dir, fileToRename);
+          const newPath = path.join(dir, newName + extension);
+          fs.rename(oldPath, newPath, (err) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(`File ${fileToRename} renamed to ${newName}${extension}`);
+            }
+          });
+        } else {
+          resolve(`No file with extension ${extension} found`);
+        }
+      }
+    });
+  });
+}
+
+
+
+// make it so if the script breaks it can look in the audio folder and find the highest number then start from there
 
 
 
 try {
-  var data = fs.readFileSync('ethnic_phenomenon.txt', 'utf8');
+  var data = fs.readFileSync('input_text/power_and_the_uses_of_spectacle.txt', 'utf8');
 } catch (e) {
   console.log('Error:', e.stack);
 }
@@ -35,9 +79,9 @@ const main = async () => {
   var email = "";
 
   while (end_section_character < book_character_length) {
-    if (section > 6) {
-      break
-    }
+    // if (section > 6) {
+    //   break
+    // }
 
     if (!last_character) {
       end_section_character = section_length
@@ -93,6 +137,7 @@ const get_driver = () => {
   var options = new chromeDriver.Options();
   options.setUserPreferences({
     "download.prompt_for_download": false,
+    "download.default_directory": "~/files/code/naughty_books",
   });
 
 
@@ -233,16 +278,32 @@ const thief = async (text, section, email) => {
   await driver.wait(until.elementLocated(By.xpath(download_button_xpath))).sendKeys(Key.RETURN);
 
 
-  var file_name = "audio/" + section + ".mp3"
 
-  while (!fs.existsSync("synthesized_audio.mp3")) {
+
+  const dir = process.cwd(); // Current working directory
+  const extension = '.mp3';
+
+  var file_exists = false;
+
+  console.log(1111);
+
+  while (file_exists == false) {
+    checkFileWithExtension(dir, extension)
+      .then((exists) => file_exists = true)
+      .catch((error) => file_exists = false)
     await delay(1000);
   }
 
-  fs.rename('synthesized_audio.mp3', file_name, function(err) {
-    if (err) throw err;
-    console.log('File Renamed.');
-  });
+  console.log(2222);
+
+
+  var new_file_name = "audio/" + section;
+  renameFileWithExtension(dir, extension, new_file_name)
+    .then((message) => console.log(message))
+    .catch((error) => console.error('Error:', error));
+
+
+  console.log(3333);
 
 
 
@@ -299,23 +360,27 @@ const thief = async (text, section, email) => {
 
 const get_temp_email_and_try_login_create_elevenlabs_account = async (driver) => {
 
-  console.log("1111");
 
   await driver.get("https://www.emailnator.com");
 
-  console.log("22222");
   var cookie_xpath = "/html/body/div/div/div/p/button";
   await driver.wait(until.elementLocated(By.xpath(cookie_xpath))).sendKeys(Key.RETURN);
+
 
   email_path = "/html/body/div/div/main/div[1]/div/div/div/div[2]/div/div[1]/input";
   let email_is_gmail = false;
   while (email_is_gmail == false) {
-    var email = await driver.findElement(By.xpath(email_path)).getAttribute("value");
+
+
+    var email = await driver.wait(until.elementLocated(By.xpath(email_path))).getAttribute("value");
+
+    console.log("email: " + email);
     if (email.includes("@gmail.com") == true) {
       email_is_gmail = true;
     }
     else {
       await driver.navigate().refresh();
+      await delay(1000);
     }
   }
 
