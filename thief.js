@@ -58,7 +58,7 @@ function renameFileWithExtension(dir, extension, newName) {
 
 
 try {
-  var data = fs.readFileSync('input_text/power_and_the_uses_of_spectacle.txt', 'utf8');
+  var data = fs.readFileSync('input_text/consume.txt', 'utf8');
 } catch (e) {
   console.log('Error:', e.stack);
 }
@@ -141,7 +141,7 @@ const get_driver = () => {
   });
 
 
-  options.addArguments('--headless');
+  // options.addArguments('--headless');
   options.addArguments("--mute-audio");
 
 
@@ -251,9 +251,13 @@ const thief = async (text, section, email) => {
 
   var sign_in_email_xpath = "/html/body/div[5]/div/div/div/div[2]/div/div/div[2]/div/form/div[2]/input";
   var sign_in_password_xpath = "/html/body/div[5]/div/div/div/div[2]/div/div/div[2]/div/form/div[3]/input";
+  var login_button_xpath = "/html/body/div[5]/div/div/div/div[2]/div/div/div[2]/div/form/div[4]/button"
 
   await driver.wait(until.elementLocated(By.xpath(sign_in_email_xpath))).sendKeys(email, Key.RETURN);
   await driver.findElement(By.xpath(sign_in_password_xpath)).sendKeys("Bisonoh.123568", Key.RETURN, Key.RETURN);
+  await driver.findElement(By.xpath(login_button_xpath)).click();
+
+
 
   var voice_button_select_xpath = "/html/body/div[3]/div[2]/div/div/div/form/div/div[1]/div[1]/div/button";
   await driver.wait(until.elementLocated(By.xpath(voice_button_select_xpath))).sendKeys(Key.RETURN);
@@ -302,53 +306,7 @@ const thief = async (text, section, email) => {
     .then((message) => console.log(message))
     .catch((error) => console.error('Error:', error));
 
-
   console.log(3333);
-
-
-
-  // elevenlabs api
-
-  // var profile_button_xpath = "/html/body/div[3]/div[1]/div/div/div[2]/div[3]/div/button";
-
-  // await driver.wait(until.elementLocated(By.xpath(profile_button_xpath))).click();
-
-  // var profile_link_xpath = "/html/body/div[3]/div[1]/div/div/div[2]/div[3]/div[2]/div[2]/a[1]";
-
-  // await driver.wait(until.elementLocated(By.xpath(profile_link_xpath))).click();
-
-  // var uncover_api_key_button_xpath = "/html/body/div[4]/div/div/div/div[2]/div/div/div/div[2]/div/div[2]/div/button[1]";
-
-  // await driver.wait(until.elementLocated(By.xpath(uncover_api_key_button_xpath))).click();
-
-
-  // var api_key_text_field_element_xpath = "/html/body/div[4]/div/div/div/div[2]/div/div/div/div[2]/div/div[2]/div/div/input";
-
-  // var xi_api_key = await driver.wait(until.elementLocated(By.xpath(api_key_text_field_element_xpath))).getAttribute("value");
-
-  // driver.quit();
-  // var voice_id = "TxGEqnHWrfWFTfGW9XjX";
-  // var file_name = "audio" + section + ".mp3";
-  // console.log(text);
-
-  // try {
-  //   var voice = "https://api.elevenlabs.io/v1/text-to-speech/" + voice_id + "/stream";
-  //   const response = await axios({
-  //     method: 'post',
-  //     url: voice,
-  //     data: { text },
-  //     headers: {
-  //       'Accept': 'audio/mpeg',
-  //       'xi-api-key': xi_api_key,
-  //       'Content-Type': 'application/json',
-  //     },
-  //     responseType: 'stream'
-  //   });
-  //   response.data.pipe(fs.createWriteStream(file_name));
-  // } catch (error) {
-  //   console.error(error);
-  // }
-
   driver.quit()
 
   return email;
@@ -375,7 +333,7 @@ const get_temp_email_and_try_login_create_elevenlabs_account = async (driver) =>
     var email = await driver.wait(until.elementLocated(By.xpath(email_path))).getAttribute("value");
 
     console.log("email: " + email);
-    if (email.includes("@gmail.com") == true) {
+    if (email.includes("@gmail.com") == true && email.includes("+") == false) {
       email_is_gmail = true;
     }
     else {
@@ -421,7 +379,6 @@ const get_temp_email_and_try_login_create_elevenlabs_account = async (driver) =>
 
 
 }
-
 
 
 

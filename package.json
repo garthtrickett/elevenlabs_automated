@@ -10,8 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-lightsail": "^3.309.0",
+    "chrome-remote-interface": "^0.32.2",
     "elevenlabs-api": "^1.0.6",
+    "pdf.js-extract": "^0.2.1",
     "request": "^2.88.2",
-    "selenium-webdriver": "^4.8.2"
+    "selenium-webdriver": "^4.8.2",
+    "sqlite3": "^5.1.6"
   }
 }
